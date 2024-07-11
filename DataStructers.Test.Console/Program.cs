@@ -105,21 +105,11 @@ namespace DataStructers.Test
             var comp = new ProductComparer();
             var ll = new LinkedList();
             var newList = ll.ToList();
-            var btt = CreateTree(comp);
 
             DateTime? dateTime = null;
             DateTime dateTime1 = DateTime.Now;
             
             DateTimeOffset dateTime2 = DateTimeOffset.Now;
-
-            BinaryTree CreateTree(IComparer comparer)
-            {
-                var bt = new BinaryTree(comparer);
-                bt.Add(new Product { Id = 1, Name = "1" });
-                bt.Add(new Product { Id = 1, Name = "1" });
-                bt.Add(new Product { Id = 1, Name = "1" });
-                return bt;
-            }
         }
     }
 }
