@@ -4,6 +4,100 @@ using System.Collections;
 
 namespace DataStructers.Test
 {
+    interface IContainer<T> : IContainerGet<T>, IContainerSet<T>
+    {
+
+    }
+
+    interface IContainerGet<out T>
+    {
+        T? Get();
+    }
+
+    interface IContainerSet<in T>
+    {
+        void Set(T? item);
+    }
+
+    class Container<T> : IContainer<T>
+    {
+        private T? _item = default;
+
+        public T? Get()
+        {
+            return _item;
+        }
+
+        public void Set(T? item)
+        {
+            //if (ValidateItem(item))
+                _item = item;
+        }
+
+        //private bool ValidateItem(T? item)
+        //{
+        //    return item == null || ValidateType(item);
+        //}
+
+        //protected virtual bool ValidateType(T item)
+        //{
+        //    return true;
+        //}
+    }
+
+    struct My<T>
+    {
+        private readonly T _item;
+    }
+
+    interface IMy<T>
+    {
+        T Value { get; }
+    }
+
+    class ViewItem
+    {
+        // element on the ui
+    }
+
+    class VA { }
+
+    class DocumentViewItem<T> : ViewItem where T : FileItem, new()
+    {
+        T File { get; set; }
+
+        public void Do()
+        {
+            T variable = new T();
+        }
+    }
+
+    class ImageViewItem<T> : ViewItem
+    {
+        T File { get; set; }
+    }
+
+
+    class FileItem
+    {
+        public byte[] Content { get; set; }
+    }
+
+    class DocxFile : FileItem
+    {
+
+    }
+
+    class PdfFile : FileItem
+    {
+
+    }
+
+    class PngFile : FileItem
+    {
+
+    }
+
     static class LinkedListExtensions
     {
         public static List<object> ToList(this LinkedList linkedList)
@@ -16,7 +110,7 @@ namespace DataStructers.Test
 
     interface IDatabaseConnection : IDisposable { }
 
-    class Product : IComparable, IDisposable
+    class Product : IComparable<Product>, IComparable<int>, IDisposable
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -71,6 +165,16 @@ namespace DataStructers.Test
 
             databaseConnection.Dispose();
         }
+
+        public int CompareTo(int other)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int CompareTo(Product? other)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     class ProductComparer : IComparer
@@ -92,10 +196,33 @@ namespace DataStructers.Test
         }
     }
 
+    class Pet { }
+    class Dog : Pet { }
+    class Cat : Pet { }
+
     internal class Program
     {
         static void Main(string[] args)
         {
+            Container<object> container = new Container<object>();
+            Container<Pet> petContainer = new Container<Pet>();
+            Container<Dog> dogCont = new Container<Dog>();
+            Container<Cat> catCont = new Container<Cat>();
+
+            Cat cat = new Cat();
+            Pet pet = cat;
+
+            IContainerSet<Dog> petContGet = petContainer;
+            //petContGet = dogCont;
+
+            Container<int> intConteiner = new Container<int>();
+            Container<Product> productContainer = new Container<Product>();
+
+            container.Set("asdasd");
+            intConteiner.Set(34234);
+            container.Set(true);
+            productContainer.Set(new Product());
+
             using Product p = new Product();
             
                 //.........

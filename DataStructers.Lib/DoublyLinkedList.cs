@@ -19,14 +19,26 @@ namespace DataStructers.Lib
             }
         }
 
-        protected override LinkedListNode CreateNode(object value, LinkedListNode? next = null, LinkedListNode? prev = null)
+        protected override TNode CreateNode<TNode>(object value, TNode? next = null, TNode? prev = null)
+            where TNode : class
         {
-            return new DoublyLinkedListNode(value)
+            var newNode = new DoublyLinkedListNode(value)
             {
                 Next = next,
-                Prev = ((DoublyLinkedListNode?)prev)?.Prev
+                //Prev = ((DoublyLinkedListNode?)prev)?.Prev
             };
+            return base.CreateNode(value, next, prev);
         }
+
+        //protected override TNode CreateNode<TNode>(object value, TNode? next = null, TNode? prev = null)
+        //    where TNode : DoublyLinkedListNode
+        //{
+        //    return new DoublyLinkedListNode(value)
+        //    {
+        //        Next = next,
+        //        Prev = ((DoublyLinkedListNode?)prev)?.Prev
+        //    };
+        //}
 
         protected override void UpdateNode(LinkedListNode node, LinkedListNode? next = null, LinkedListNode? prev = null, bool flagInsert = false)
         {

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace DataStructers.Lib
 {
@@ -36,9 +37,11 @@ namespace DataStructers.Lib
             Count = 0;
         }
 
-        protected virtual LinkedListNode CreateNode(object value, LinkedListNode? next = null, LinkedListNode? prev = null)
+        protected virtual TNode CreateNode<TNode>(object value, TNode? next = null, TNode? prev = null)
+            where TNode : LinkedListNode
         {
-            return new LinkedListNode(value) { Next = next };
+            var newNode = new LinkedListNode(value) { Next = next };
+            return (TNode)newNode;
         }
 
         protected virtual void UpdateNode(LinkedListNode node, LinkedListNode? next = null, LinkedListNode? prev = null, bool flagInsert = false)
