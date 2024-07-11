@@ -37,7 +37,7 @@ namespace DataStructers.Lib
             Count = 0;
         }
 
-        protected virtual TNode CreateNode<TNode>(object value, TNode? next = null, TNode? prev = null)
+        protected virtual TNode CreateNode<TNode>(object value, LinkedListNode? next = null, LinkedListNode? prev = null)
             where TNode : LinkedListNode
         {
             var newNode = new LinkedListNode(value) { Next = next };
@@ -51,7 +51,7 @@ namespace DataStructers.Lib
 
         public void Add(object value)
         {
-            var newNode = CreateNode(value);
+            var newNode = CreateNode<LinkedListNode>(value);
 
             if (_first == null)
             {
@@ -70,7 +70,7 @@ namespace DataStructers.Lib
 
         public void AddFirst(object value)
         {
-            var newNode = CreateNode(value);
+            var newNode = CreateNode<LinkedListNode>(value);
 
             if (_first == null)
             {
@@ -97,7 +97,7 @@ namespace DataStructers.Lib
                 return;
             }
 
-            var newNode = CreateNode(value);
+            var newNode = CreateNode<LinkedListNode>(value);
             var currentIndex = 0;
             var current = _first;
 
