@@ -21,17 +21,16 @@ namespace DataStructers.Lib
         }
     }
 
-    public class BinaryTree
+    public class BinTree
     {
         private TreeNode? Root { get; set; }
         public int Count { get; private set; }
 
-        public BinaryTree()
+        public BinTree()
         {
             Root = null;
             Count = 0;
         }
-
 
         public void Add(int value)
         {
@@ -91,29 +90,6 @@ namespace DataStructers.Lib
             Root = null!;
             Count = 0;
         }
-
-        //public object[] DFS()
-        //{
-        //    var result = new List();
-
-        //    if (Root == null)
-        //        return result.ToArray();
-
-        //    DFSRecursive(Root, result);
-
-        //    return result.ToArray();
-        //}
-
-        //private void DFSRecursive(TreeNode node, List result)
-        //{
-        //    if (node == null)
-        //        return;
-
-        //    result.Add(node.Value);
-
-        //    DFSRecursive(node.Left!, result);
-        //    DFSRecursive(node.Right!, result);
-        //}
 
         public object[] ToArray()
         {
