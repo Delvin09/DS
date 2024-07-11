@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DataStructers.Lib.Interfaces;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,9 +22,12 @@ namespace DataStructers.Lib
         }
     }
 
-    public class BinTree
+    public class BinTree : IBinaryTree
     {
         private TreeNode? Root { get; set; }
+
+        object? IBinaryTree.Root => Root?.Value;
+
         public int Count { get; private set; }
 
         public BinTree()
