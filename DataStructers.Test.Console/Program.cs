@@ -1,242 +1,90 @@
-﻿using DataStructers.Lib;
-using System;
-using System.Collections;
+﻿using System;
 
 namespace DataStructers.Test
 {
-    interface IContainer<T> : IContainerGet<T>, IContainerSet<T>
+    class MyClass
     {
+        private bool Bar() { return false; }
 
-    }
-
-    interface IContainerGet<out T>
-    {
-        T? Get();
-    }
-
-    interface IContainerSet<in T>
-    {
-        void Set(T? item);
-    }
-
-    class Container<T> : IContainer<T>
-    {
-        private T? _item = default;
-
-        public T? Get()
+        public Func<int, int> Run()
         {
-            return _item;
+            return Foo;
         }
 
-        public void Set(T? item)
+        private void Process(Func<int, string, int> whenDone, Func<int, string, int> whenError)
         {
-            //if (ValidateItem(item))
-                _item = item;
+            //....
+            var result = whenDone(10, "Callback call");
+            //....
         }
 
-        //private bool ValidateItem(T? item)
-        //{
-        //    return item == null || ValidateType(item);
-        //}
-
-        //protected virtual bool ValidateType(T item)
-        //{
-        //    return true;
-        //}
-    }
-
-    struct My<T>
-    {
-        private readonly T _item;
-    }
-
-    interface IMy<T>
-    {
-        T Value { get; }
-    }
-
-    class ViewItem
-    {
-        // element on the ui
-    }
-
-    class VA { }
-
-    class DocumentViewItem<T> : ViewItem where T : FileItem, new()
-    {
-        T File { get; set; }
-
-        public void Do()
+        private int Foo(int x)
         {
-            T variable = new T();
-        }
-    }
-
-    class ImageViewItem<T> : ViewItem
-    {
-        T File { get; set; }
-    }
-
-
-    class FileItem
-    {
-        public byte[] Content { get; set; }
-    }
-
-    class DocxFile : FileItem
-    {
-
-    }
-
-    class PdfFile : FileItem
-    {
-
-    }
-
-    class PngFile : FileItem
-    {
-
-    }
-
-    static class LinkedListExtensions
-    {
-        public static List<object> ToList(this LinkedList linkedList)
-        {
-            return linkedList.ToArray().ToList();
-        }
-    }
-
-    class Order { }
-
-    interface IDatabaseConnection : IDisposable { }
-
-    class Product : IComparable<Product>, IComparable<int>, IDisposable
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-
-        public List<Order> Orders { get; set; } = new List<Order>();
-
-        private IDatabaseConnection databaseConnection;
-        private bool _disposed;
-
-        public int CompareTo(object? obj)
-        {
-            if (obj == null)
-            {
-                throw new ArgumentNullException(nameof(obj));
-            }
-            else if (obj is Product product)
-            {
-                return this.Id - product.Id;
-            }
-            else
-            {
-                throw new ArgumentException();
-            }
+            Console.WriteLine($"{x} - ");
+            return x;
         }
 
-        ~Product()
+        private int M1(int x, string msg)
         {
-            Dispose(false);
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (_disposed) return;
-
-            _disposed = true;
-
-            if (disposing)
-            {
-                // не фіналізатор
-            }
-            else
-            {
-                // фіналізатор
-            }
-
-            databaseConnection.Dispose();
-        }
-
-        public int CompareTo(int other)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int CompareTo(Product? other)
-        {
-            throw new NotImplementedException();
+            Console.WriteLine($"{x} - {msg}");
+            return 0;
         }
     }
-
-    class ProductComparer : IComparer
-    {
-        public int Compare(object? x, object? y)
-        {
-            if (x == null || y == null)
-            {
-                throw new ArgumentNullException();
-            }
-            else if (x is Product product1 && y is Product product2)
-            {
-                return product1.Id - product2.Id;
-            }
-            else
-            {
-                throw new ArgumentException();
-            }
-        }
-    }
-
-    class Pet { }
-    class Dog : Pet { }
-    class Cat : Pet { }
 
     internal class Program
     {
         static void Main(string[] args)
         {
-            Container<object> container = new Container<object>();
-            Container<Pet> petContainer = new Container<Pet>();
-            Container<Dog> dogCont = new Container<Dog>();
-            Container<Cat> catCont = new Container<Cat>();
+            ITests[] tests = { new ListTests(), new LinkedListTests() };
+            foreach (var testGroup in tests)
+            {
+                testGroup.Run();
 
-            Cat cat = new Cat();
-            Pet pet = cat;
+                var runMethod = testGroup.Run;
+            }
 
-            IContainerSet<Dog> petContGet = petContainer;
-            //petContGet = dogCont;
+            //OldTests.Run();
 
-            Container<int> intConteiner = new Container<int>();
-            Container<Product> productContainer = new Container<Product>();
+            var myobj = new MyClass();
 
-            container.Set("asdasd");
-            intConteiner.Set(34234);
-            container.Set(true);
-            productContainer.Set(new Product());
+            Func<int, int> callback = M2;
+            callback += M2;
+            callback += M2;
+            callback += myobj.Run();
+            callback += M2;
+            callback += M2;
+            callback += myobj.Run();
 
-            using Product p = new Product();
-            
-                //.........
-             // p.Dispose();
+            callback -= myobj.Run();
 
+            var result = callback(11);
+            Console.WriteLine(result);
 
-            var comp = new ProductComparer();
-            var ll = new LinkedList();
-            var newList = ll.ToList();
+            Func<int, bool> someDelegate = item =>
+            {
+                Console.WriteLine("100");
+                return item % 100 > 90;
+            };
 
-            DateTime? dateTime = null;
-            DateTime dateTime1 = DateTime.Now;
-            
-            DateTimeOffset dateTime2 = DateTimeOffset.Now;
+            someDelegate += item =>
+            {
+                Console.WriteLine("50");
+                return item % 50 > 90;
+            };
+
+            someDelegate -= item =>
+            {
+                Console.WriteLine("50");
+                return item % 50 > 90;
+            };
+
+            someDelegate(1000);
+        }
+
+        static int M2(int y)
+        {
+            Console.WriteLine($"{y} <> ");
+            return 1;
         }
     }
 }

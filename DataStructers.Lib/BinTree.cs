@@ -125,5 +125,28 @@ namespace DataStructers.Lib
 
             return array;
         }
+
+        public object?[] DFS()
+        {
+            var result = new List();
+
+            if (Root == null)
+                return result.ToArray();
+
+            DFSRecursive(Root!, result);
+
+            return result.ToArray();
+        }
+
+        private void DFSRecursive(TreeNode node, List result)
+        {
+            if (node == null)
+                return;
+
+            result.Add(node.Value);
+
+            DFSRecursive(node.Left!, result);
+            DFSRecursive(node.Right!, result);
+        }
     }
 }
