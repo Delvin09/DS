@@ -5,19 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using CustomList = DataStructers.Lib.List;
-using CustomLinkedList = DataStructers.Lib.LinkedList;
+using CustomList = DataStructers.Lib.List<object>;
+using CustomLinkedList = DataStructers.Lib.LinkedList<object>;
+using System.Xml.Linq;
+using System.ComponentModel;
 
 namespace DataStructers.Test
 {
-    public interface ITests
-    {
-        string Name { get; }
-
-        void Run();
-    }
-
-    abstract class Tests : ITests
+    public class ConsoleTestRenderer
     {
         private int _identCount;
 
@@ -32,35 +27,29 @@ namespace DataStructers.Test
             }
         }
 
-        public abstract string Name { get; }
-
-        public void Run()
+        public void RenderHeader(object sender, string testGroup)
         {
             System.Console.BackgroundColor = ConsoleColor.Gray;
             System.Console.ForegroundColor = ConsoleColor.Blue;
 
-            System.Console.Write(Name);
+            System.Console.Write(testGroup);
             System.Console.ForegroundColor = ConsoleColor.Black;
             System.Console.Write(" tests run:");
             System.Console.WriteLine();
 
             System.Console.ResetColor();
             IdentCount++;
-
-            RutTests();
         }
 
-        protected abstract void RutTests();
-
-        protected void ShowTestResult(string testName, bool isSuccess)
+        public void ShowTestResult(object sender, AfterTestRunEventArgs args)
         {
             System.Console.ResetColor();
 
             for (int num = 1; num <= _identCount; num++) System.Console.Write("  ");
-            System.Console.Write($"{testName}: ");
+            System.Console.Write($"{args.TestName}: ");
 
             string resultMsg;
-            if (isSuccess)
+            if (args.IsSuccess)
             {
                 System.Console.BackgroundColor = ConsoleColor.Green;
                 System.Console.ForegroundColor = ConsoleColor.White;
@@ -78,17 +67,76 @@ namespace DataStructers.Test
             System.Console.Write(resultMsg);
             System.Console.ResetColor();
             System.Console.WriteLine(" ");
-
         }
     }
 
-    class LinkedListTests : Tests
+    public class AfterTestRunEventArgs : EventArgs
+    {
+        public string TestName { get; init; }
+
+        public bool IsSuccess { get; init; }
+    }
+
+    public interface ITestGroup
+    {
+        string Name { get; }
+
+        void Run();
+
+        event EventHandler<string>? OnBeforeTestGroupRun;
+        event EventHandler<string>? OnAfterTestGroupRun;
+
+        event EventHandler<AfterTestRunEventArgs>? OnAfterTestRun;
+    }
+
+    abstract class TestGroup : ITestGroup
+    {
+        public abstract string Name { get; }
+
+        public void Run()
+        {
+            if (OnBeforeTestGroupRun != null)
+            {
+                OnBeforeTestGroupRun(this, Name);
+            }
+
+            var tests = GetTests();
+            foreach (var test in tests)
+            {
+                test();
+            }
+
+            OnAfterTestGroupRun?.Invoke(this, Name);
+        }
+
+        protected abstract System.Collections.Generic.List<Action> GetTests();
+
+        protected void SendTestResult(string testName, bool isSuccess)
+        {
+            OnAfterTestRun?.Invoke(
+                sender: this,
+                e: new AfterTestRunEventArgs
+                {
+                    TestName = testName,
+                    IsSuccess = isSuccess
+                });
+        }
+
+        public event EventHandler<string>? OnBeforeTestGroupRun;
+        public event EventHandler<string>? OnAfterTestGroupRun;
+
+        public event EventHandler<AfterTestRunEventArgs>? OnAfterTestRun;
+    }
+
+    class LinkedListTests : TestGroup
     {
         public override string Name => "DataStructers.Lib.LinkedList";
 
-        protected override void RutTests()
+        protected override System.Collections.Generic.List<Action> GetTests()
         {
-            TestAddElements();
+            return new System.Collections.Generic.List<Action> {
+                TestAddElements
+            };
         }
 
         private void TestAddElements()
@@ -103,33 +151,27 @@ namespace DataStructers.Test
                 && (int)linkedList.First == 10
                 && (int)linkedList.Last == 30;
 
-            ShowTestResult(nameof(TestAddElements), isSuccess);
+            SendTestResult(nameof(TestAddElements), isSuccess);
         }
     }
 
-    class ListTests : Tests
+    class ListTests : TestGroup
     {
         public override string Name => "DataStructers.Lib.List";
 
-        protected override void RutTests()
+        protected override System.Collections.Generic.List<Action> GetTests()
         {
-            TestAddElements();
-
-            TestListContains();
-
-            TestListInsert();
-
-            TestListReverse();
-
-            TestListRemove();
-
-            TestListRemoveAt();
-
-            TestListIndexOf();
-
-            TestListToArray();
-
-            TestListClear();
+            return new System.Collections.Generic.List<Action>() {
+                TestAddElements,
+                TestListContains,
+                TestListInsert,
+                TestListReverse,
+                TestListRemove,
+                TestListRemoveAt,
+                TestListIndexOf,
+                TestListToArray,
+                TestListClear,
+            };
         }
 
         private void TestAddElements()
@@ -148,7 +190,7 @@ namespace DataStructers.Test
                 && list[3] is double && (double)list[3]! == 10.2
                 && list[4] is string && (string)list[4]! == "end";
 
-            ShowTestResult(nameof(TestAddElements), isSuccess);
+            SendTestResult(nameof(TestAddElements), isSuccess);
         }
 
         private void TestListContains()
@@ -164,7 +206,7 @@ namespace DataStructers.Test
                 && list.Contains("10")
                 && !list.Contains(null);
 
-            ShowTestResult(nameof(TestListContains), hasElements);
+            SendTestResult(nameof(TestListContains), hasElements);
         }
 
         private void TestListIndexOf()
@@ -181,7 +223,7 @@ namespace DataStructers.Test
                 && list.IndexOf('c') == 2
                 && list.IndexOf(null) < 0;
 
-            ShowTestResult(nameof(TestListIndexOf), isSuccess);
+            SendTestResult(nameof(TestListIndexOf), isSuccess);
         }
 
         private void TestListInsert()
@@ -196,7 +238,7 @@ namespace DataStructers.Test
                 && (string)list[1]! == "3"
                 && (string)list[2]! == "1";
 
-            ShowTestResult(nameof(TestListInsert), isSuccess);
+            SendTestResult(nameof(TestListInsert), isSuccess);
         }
 
         private void TestListReverse()
@@ -213,7 +255,7 @@ namespace DataStructers.Test
                 && (int)list[1]! == 2
                 && (int)list[2]! == 1;
 
-            ShowTestResult(nameof(TestListReverse), isSuccess);
+            SendTestResult(nameof(TestListReverse), isSuccess);
         }
 
         private void TestListRemove()
@@ -238,7 +280,7 @@ namespace DataStructers.Test
             isSuccess &= list.Count == 0;
 
         exit:
-            ShowTestResult(nameof(TestListRemove), isSuccess);
+            SendTestResult(nameof(TestListRemove), isSuccess);
         }
 
         private void TestListRemoveAt()
@@ -263,7 +305,7 @@ namespace DataStructers.Test
             isSuccess &= list.Count == 0;
 
         exit:
-            ShowTestResult(nameof(TestListRemove), isSuccess);
+            SendTestResult(nameof(TestListRemove), isSuccess);
         }
 
         private void TestListToArray()
@@ -286,7 +328,7 @@ namespace DataStructers.Test
                 && !arr[1]!.Equals(list[1]);
 
         exit:
-            ShowTestResult(nameof(TestListToArray), isSuccess);
+            SendTestResult(nameof(TestListToArray), isSuccess);
         }
 
         private void TestListClear()
@@ -301,7 +343,7 @@ namespace DataStructers.Test
             list.Clear();
             isSuccess &= list.Count == 0;
 
-            ShowTestResult(nameof(TestListToArray), isSuccess);
+            SendTestResult(nameof(TestListToArray), isSuccess);
         }
     }
 }

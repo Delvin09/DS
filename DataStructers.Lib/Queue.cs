@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace DataStructers.Lib
 {
-    public class Queue
+    public class Queue<T>
     {
         private class QueueNode
         {
-            public object? Value { get; }
+            public T? Value { get; }
             public QueueNode? Next { get; set; }
 
-            public QueueNode(object? value)
+            public QueueNode(T? value)
             {
                 Value = value;
                 Next = null;
@@ -32,7 +32,7 @@ namespace DataStructers.Lib
             Count = 0;
         }
 
-        public void Enqueue(object? value)
+        public void Enqueue(T? value)
         {
             var newNode = new QueueNode(value);
 
@@ -50,7 +50,7 @@ namespace DataStructers.Lib
             Count++;
         }
 
-        public object? Dequeue()
+        public T? Dequeue()
         {
             if (_head == null)
                 throw new InvalidOperationException("Queue is empty");
@@ -66,12 +66,12 @@ namespace DataStructers.Lib
             return deQueueElement;
         }
 
-        public bool Contains(object? value)
+        public bool Contains(T? value)
         {
             return Count > 0 && Contains(_head!, value);
         }
 
-        private bool Contains(QueueNode current, object? value)
+        private bool Contains(QueueNode current, T? value)
         {
             while (current != null)
             {
@@ -84,7 +84,7 @@ namespace DataStructers.Lib
             return false;
         }
 
-        public object? Peek()
+        public T? Peek()
         {
             if (_head == null)
                 throw new InvalidOperationException("Queue is empty");
@@ -92,12 +92,12 @@ namespace DataStructers.Lib
             return _head.Value;
         }
 
-        public object?[] ToArray()
+        public T?[] ToArray()
         {
             if (_head == null)
-                return new object?[0];
+                return new T?[0];
 
-            var objects = new object?[Count];
+            var objects = new T?[Count];
             var current = _head;
             var index = 0;
 

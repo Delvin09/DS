@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace DataStructers.Lib
 {
-    public class Stack
+    public class Stack<T>
     {
         private class StackNode
         {
-            public object? Value { get; }
+            public T? Value { get; }
             public StackNode? Next { get; set; }
 
-            public StackNode(object? value)
+            public StackNode(T? value)
             {
                 Value = value;
                 Next = null;
@@ -30,7 +30,7 @@ namespace DataStructers.Lib
             Count = 0;
         }
 
-        public void Push(object? value)
+        public void Push(T? value)
         {
             var node = new StackNode(value);
 
@@ -45,7 +45,7 @@ namespace DataStructers.Lib
             Count++;
         }
 
-        public object? Pop()
+        public T? Pop()
         {
             if (_top == null)
                 throw new InvalidOperationException("Stack is empty");
@@ -57,7 +57,7 @@ namespace DataStructers.Lib
             return poppedElement;
         }
 
-        public object? Peek()
+        public T? Peek()
         {
             if (_top == null)
                 throw new InvalidOperationException("Stack is empty");
@@ -65,7 +65,7 @@ namespace DataStructers.Lib
             return _top.Value;
         }
 
-        public bool Contains(object? value)
+        public bool Contains(T? value)
         {
             if (_top == null)
                 return false;
@@ -84,12 +84,12 @@ namespace DataStructers.Lib
             return false;
         }
 
-        public object?[] ToArray()
+        public T?[] ToArray()
         {
             if (_top == null)
-                return Array.Empty<object?>();
+                return Array.Empty<T?>();
 
-            var objects = new object?[Count];
+            var objects = new T?[Count];
             var current = _top;
             var index = 0;
 

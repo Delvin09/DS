@@ -7,35 +7,35 @@ using System.Threading.Tasks;
 
 namespace DataStructers.Lib
 {
-    public class DoublyLinkedList : LinkedList
+    public class DoublyLinkedList<T> : LinkedList<T>
     {
-        class DoublyLinkedListNode : LinkedListNode
+        class DoublyLinkedListNode<T> : LinkedListNode<T>
         {
-            public DoublyLinkedListNode? Prev { get; set; }
+            public DoublyLinkedListNode<T>? Prev { get; set; }
 
-            public DoublyLinkedListNode(object value) : base(value)
+            public DoublyLinkedListNode(T value) : base(value)
             {
                 Prev = null;
             }
         }
 
-        protected override TNode CreateNode<TNode>(object value, LinkedListNode? next = null, LinkedListNode? prev = null)
+        protected override TNode CreateNode<TNode>(T value, LinkedListNode<T>? next = null, LinkedListNode<T>? prev = null)
         {
-            LinkedListNode newNode = new DoublyLinkedListNode(value)
+            LinkedListNode<T> newNode = new DoublyLinkedListNode<T>(value)
             {
                 Next = next,
-                Prev = (DoublyLinkedListNode?)prev
+                Prev = (DoublyLinkedListNode<T>?)prev
             };
             return (TNode)newNode;
         }
 
-        protected override void UpdateNode(LinkedListNode node, LinkedListNode? next = null, LinkedListNode? prev = null, bool flagInsert = false)
+        protected override void UpdateNode(LinkedListNode<T> node, LinkedListNode<T>? next = null, LinkedListNode<T>? prev = null, bool flagInsert = false)
         {
-            ((DoublyLinkedListNode)node).Prev = (DoublyLinkedListNode?)prev;
+            ((DoublyLinkedListNode<T>)node).Prev = (DoublyLinkedListNode<T>?)prev;
 
             if (prev?.Next != null && flagInsert == true)
             {
-                ((DoublyLinkedListNode)prev.Next).Prev = (DoublyLinkedListNode)node;
+                ((DoublyLinkedListNode<T>)prev.Next).Prev = (DoublyLinkedListNode<T>)node;
                 base.UpdateNode(node, next, prev);
             }
             else
@@ -45,9 +45,9 @@ namespace DataStructers.Lib
                 _last = node;
         }
 
-        protected override bool RemoveNode(object value)
+        protected override bool RemoveNode(T value)
         {
-            DoublyLinkedListNode? previous = null;
+            DoublyLinkedListNode<T>? previous = null;
             var current = _first;
 
             while (current != null)
@@ -56,10 +56,10 @@ namespace DataStructers.Lib
                 {
                     if (previous == null)
                     {
-                        _first = (DoublyLinkedListNode?)current.Next;
+                        _first = (DoublyLinkedListNode<T>?)current.Next;
 
                         if (_first != null)
-                            ((DoublyLinkedListNode)_first).Prev = null;
+                            ((DoublyLinkedListNode<T>)_first).Prev = null;
                         else
                             _last = null!;
                     }
@@ -69,15 +69,15 @@ namespace DataStructers.Lib
                         if (current.Next == null)
                             _last = previous;
                         else
-                            ((DoublyLinkedListNode)current.Next).Prev = previous;
+                            ((DoublyLinkedListNode<T>)current.Next).Prev = previous;
                     }
 
                     Count--;
                     return true;
                 }
 
-                previous = (DoublyLinkedListNode)current;
-                current = (DoublyLinkedListNode?)current.Next;
+                previous = (DoublyLinkedListNode<T>)current;
+                current = (DoublyLinkedListNode<T>?)current.Next;
             }
 
             return false;
@@ -88,9 +88,9 @@ namespace DataStructers.Lib
             if (_first == null)
                 throw new InvalidOperationException("List is empty");
 
-            _first = (DoublyLinkedListNode?)_first.Next;
+            _first = (DoublyLinkedListNode<T>?)_first.Next;
             if (_first != null)
-                ((DoublyLinkedListNode)_first).Prev = null;
+                ((DoublyLinkedListNode<T>)_first).Prev = null;
             else
                 _last = null;
 
@@ -102,7 +102,7 @@ namespace DataStructers.Lib
             if (_last == null)
                 throw new InvalidOperationException("List is empty");
 
-            _last = ((DoublyLinkedListNode)_last).Prev;
+            _last = ((DoublyLinkedListNode<T>)_last).Prev;
             if (_last != null)
                 _last.Next = null;
             else

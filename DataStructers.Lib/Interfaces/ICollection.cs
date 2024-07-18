@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace DataStructers.Lib.Interfaces
 {
-    public interface ICollection
+    public interface ICollection<T>
     {
         int Count { get; }
 
         void Clear();
 
-        object[] ToArray();
+        T[] ToArray();
     }
 }

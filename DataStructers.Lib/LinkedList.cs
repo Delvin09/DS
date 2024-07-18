@@ -8,25 +8,27 @@ using System.Xml.Linq;
 
 namespace DataStructers.Lib
 {
-    public class LinkedList : ILinkedList
+    public class LinkedList<T> : ILinkedList<T>
     {
-        protected class LinkedListNode
+        protected class LinkedListNode<T>
         {
-            public object Value { get; }
-            public LinkedListNode? Next { get; set; }
+            public T Value { get; }
 
-            public LinkedListNode(object value)
+            public LinkedListNode<T>? Next { get; set; }
+
+            public LinkedListNode(T value)
             {
                 Value = value;
                 Next = null;
             }
         }
 
-        protected LinkedListNode? _first;
-        protected LinkedListNode? _last;
+        protected LinkedListNode<T>? _first;
+        protected LinkedListNode<T>? _last;
 
-        public object? First => _first?.Value;
-        public object? Last => _last?.Value;
+        public T? First => _first != null ? _first.Value : default;
+
+        public T? Last => _last != null ? _last.Value : default;
 
         public int Count { get; protected set; }
 
@@ -37,21 +39,21 @@ namespace DataStructers.Lib
             Count = 0;
         }
 
-        protected virtual TNode CreateNode<TNode>(object value, LinkedListNode? next = null, LinkedListNode? prev = null)
-            where TNode : LinkedListNode
+        protected virtual TNode CreateNode<TNode>(T value, LinkedListNode<T>? next = null, LinkedListNode<T>? prev = null)
+            where TNode : LinkedListNode<T>
         {
-            var newNode = new LinkedListNode(value) { Next = next };
+            var newNode = new LinkedListNode<T>(value) { Next = next };
             return (TNode)newNode;
         }
 
-        protected virtual void UpdateNode(LinkedListNode node, LinkedListNode? next = null, LinkedListNode? prev = null, bool flagInsert = false)
+        protected virtual void UpdateNode(LinkedListNode<T> node, LinkedListNode<T>? next = null, LinkedListNode<T>? prev = null, bool flagInsert = false)
         {
             prev!.Next = node;
         }
 
-        public void Add(object value)
+        public void Add(T value)
         {
-            var newNode = CreateNode<LinkedListNode>(value);
+            var newNode = CreateNode<LinkedListNode<T>>(value);
 
             if (_first == null)
             {
@@ -68,9 +70,9 @@ namespace DataStructers.Lib
             Count++;
         }
 
-        public void AddFirst(object value)
+        public void AddFirst(T value)
         {
-            var newNode = CreateNode<LinkedListNode>(value);
+            var newNode = CreateNode<LinkedListNode<T>>(value);
 
             if (_first == null)
             {
@@ -86,7 +88,7 @@ namespace DataStructers.Lib
             Count++;
         }
 
-        public virtual void Insert(int index, object value)
+        public virtual void Insert(int index, T value)
         {
             if (index < 0 || index > Count)
                 throw new ArgumentOutOfRangeException(nameof(index));
@@ -97,7 +99,7 @@ namespace DataStructers.Lib
                 return;
             }
 
-            var newNode = CreateNode<LinkedListNode>(value);
+            var newNode = CreateNode<LinkedListNode<T>>(value);
             var currentIndex = 0;
             var current = _first;
 
@@ -122,7 +124,7 @@ namespace DataStructers.Lib
                 return false;
             else
             {
-                if (_first.Value.Equals(value) || _last!.Value.Equals(value))
+                if (_first.Value!.Equals(value) || _last!.Value!.Equals(value))
                     return true;
                 else
                 {
@@ -130,7 +132,7 @@ namespace DataStructers.Lib
 
                     while (currentNode != null)
                     {
-                        if (currentNode.Value.Equals(value))
+                        if (currentNode.Value!.Equals(value))
                             return true;
                         currentNode = currentNode.Next;
                     }
@@ -140,16 +142,16 @@ namespace DataStructers.Lib
             return false;
         }
 
-        protected virtual bool RemoveNode(object value)
+        protected virtual bool RemoveNode(T value)
         {
-            LinkedListNode? prevNode = null;
+            LinkedListNode<T>? prevNode = null;
             var current = _first;
 
             while (current != null)
             {
-                if (current.Value.Equals(value))
+                if (current.Value!.Equals(value))
                 {
-                    if (_first!.Value.Equals(value))
+                    if (_first!.Value!.Equals(value))
                     {
                         _first = current.Next;
 
@@ -175,7 +177,7 @@ namespace DataStructers.Lib
             return false;
         }
 
-        public bool Remove(object value)
+        public bool Remove(T value)
         {
             if (_first == null)
                 throw new InvalidOperationException("List is empty");
@@ -183,19 +185,19 @@ namespace DataStructers.Lib
             return RemoveNode(value);
         }
 
-        public object[] ToArray()
+        public T[] ToArray()
         {
-            var objects = new object[0];
+            var objects = new T[0];
 
             if (_first == null)
                 return objects;
 
-            objects = new object[Count];
+            objects = new T[Count];
             var currentNode = _first;
             var index = 0;
             while (currentNode != null)
             {
-                objects[index++] = currentNode.Value;
+                objects[index++] = currentNode.Value!;
                 currentNode = currentNode.Next;
             }
 

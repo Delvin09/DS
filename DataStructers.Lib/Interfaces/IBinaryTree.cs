@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace DataStructers.Lib.Interfaces
 {
-    public interface IBinaryTree : ICollection
+    public interface IBinaryTree<T> : ICollection<T> 
+        where T : IComparable<T>
     {
-        object? Root { get; }
+        T? Root { get; }
     }
 }
