@@ -1,4 +1,7 @@
-﻿using System;
+﻿using DataStructers.Lib;
+using DataStructers.Lib.Interfaces;
+using System;
+using DataStructers.Lib.Linq;
 
 namespace DataStructers.Test
 {
@@ -40,7 +43,7 @@ namespace DataStructers.Test
 
     class FileLogger
     {
-        public void SaveTestResult(object sender, EventArgs eventArgsf)
+        public void SaveTestResult(object sender, EventArgs eventArgs)
         {
 
         }
@@ -54,6 +57,34 @@ namespace DataStructers.Test
     {
         static void Main(string[] args)
         {
+            var list = new DataStructers.Lib.List<string>();
+            list.Add("Oleg");
+            list.Add("Sam");
+            list.Add("Bill");
+
+            //var filtered =
+            //    LinqExtensions.Get(LinqExtensions.Filter(list, item => item.Contains('l')), 10);
+
+            var filtered =
+                list
+                    .Filter(item => item.Contains('l'))
+                    .Get(10);
+
+            foreach (var item in filtered)
+            {
+                Console.WriteLine(item);
+            }
+
+            //var iterator = list.GetEnumerator();
+
+            //while(iterator.MoveNext())
+            //{
+            //    Console.WriteLine(iterator.Current);
+            //}
+            //iterator.Dispose();
+
+
+
             var logger = new FileLogger();
             var renerer = new ConsoleTestRenderer();
 

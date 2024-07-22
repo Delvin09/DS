@@ -1,5 +1,6 @@
 ﻿using DataStructers.Lib.Interfaces;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ using System.Xml.Linq;
 
 namespace DataStructers.Lib
 {
-    public class LinkedList<T> : ILinkedList<T>
+    public class LinkedList<T> : ILinkedList<T>, IEnumerable<T>
     {
         protected class LinkedListNode<T>
         {
@@ -209,6 +210,54 @@ namespace DataStructers.Lib
             _first = null;
             _last = null;
             Count = 0;
+        }
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            return new LinkedListIterator<T>(this);
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        private class LinkedListIterator<T> : IEnumerator<T>
+        {
+            private readonly LinkedList<T> list;
+            private LinkedList<T>.LinkedListNode<T>? currentNode = null;
+
+            public T Current { get => currentNode != null ? currentNode.Value : default; }
+
+            object IEnumerator.Current => Current;
+
+            public LinkedListIterator(LinkedList<T> list)
+            {
+                this.list = list;
+            }
+
+            public bool MoveNext()
+            {
+                if (currentNode == null)
+                {
+                    currentNode = list._first;
+                }
+                else
+                {
+                    currentNode = currentNode.Next;
+                }
+
+                return currentNode != null;
+            }
+
+            public void Reset()
+            {
+                currentNode = null;
+            }
+
+            public void Dispose()
+            {
+            }
         }
     }
 }

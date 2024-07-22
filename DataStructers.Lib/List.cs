@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DataStructers.Lib.Interfaces;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DataStructers.Lib
 {
-    public class List<T>
+    public class List<T> : Interfaces.ICollection<T>, IEnumerable<T>
     {
         private const int DefaultCapacity = 4;
         private T?[] _objects;
@@ -141,6 +142,46 @@ namespace DataStructers.Lib
                 var temp = _objects![i];
                 _objects[i] = _objects[Count - i - 1];
                 _objects[Count - i - 1] = temp;
+            }
+        }
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            return new ListIterator<T>(this);
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        private class ListIterator<T> : IEnumerator<T>
+        {
+            private readonly List<T> list;
+            private int currentIndex = -1;
+
+            public T Current => list[currentIndex];
+
+            object IEnumerator.Current => Current;
+
+            public ListIterator(List<T> list)
+            {
+                this.list = list;
+            }
+
+            public bool MoveNext()
+            {
+                currentIndex++;
+                return currentIndex < list.Count;
+            }
+
+            public void Reset()
+            {
+                currentIndex = -1;
+            }
+
+            public void Dispose()
+            {
             }
         }
     }
