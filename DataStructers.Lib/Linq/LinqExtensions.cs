@@ -74,6 +74,7 @@ namespace DataStructers.Lib.Linq
             //    }
             //}
             //return list;
+
             return new FilterEnumerable<T>(collection, predicate);
         }
 

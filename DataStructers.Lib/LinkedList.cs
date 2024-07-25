@@ -9,7 +9,8 @@ using System.Xml.Linq;
 
 namespace DataStructers.Lib
 {
-    public class LinkedList<T> : ILinkedList<T>, IEnumerable<T>
+    public class LinkedList<T> : ILinkedList<T>
+        , IEnumerable<T>
     {
         protected class LinkedListNode<T>
         {

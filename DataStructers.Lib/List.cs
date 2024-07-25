@@ -8,7 +8,8 @@ using System.Threading.Tasks;
 
 namespace DataStructers.Lib
 {
-    public class List<T> : Interfaces.ICollection<T>, IEnumerable<T>
+    public class List<T> : Interfaces.ICollection<T>
+        , IEnumerable<T>
     {
         private const int DefaultCapacity = 4;
         private T?[] _objects;
@@ -145,9 +146,23 @@ namespace DataStructers.Lib
             }
         }
 
+        public Lib.List<T> Filter(Func<T, bool> filter)
+        {
+            var result = new Lib.List<T>();
+            for (int i = 0; i < Count; i++)
+            {
+                if (filter(_objects[i]))
+                {
+                    result.Add(_objects[i]);
+                }
+            }
+
+            return result;
+        }
+
         public IEnumerator<T> GetEnumerator()
         {
-            return new ListIterator<T>(this);
+            return new ListIterator(this);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -155,7 +170,7 @@ namespace DataStructers.Lib
             return GetEnumerator();
         }
 
-        private class ListIterator<T> : IEnumerator<T>
+        private class ListIterator : IEnumerator<T>
         {
             private readonly List<T> list;
             private int currentIndex = -1;
