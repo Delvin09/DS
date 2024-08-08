@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DataStructers.Lib.Linq
 {
-    public static class LinqExtensions
+    /*public static class LinqExtensions
     {
         private class FilterEnumerable<T> : IEnumerable<T>
         {
@@ -89,5 +89,5 @@ namespace DataStructers.Lib.Linq
                     yield break;
             }
         }
-    }
+    }*/
 }
