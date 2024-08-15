@@ -11,4 +11,10 @@
     <ProjectReference Include="..\DataStructers.Lib\DataStructers.Lib.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="TestFrameWork.Abstractions">
+      <HintPath>..\..\TFW\TestFrameWork.Abstractions.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>
